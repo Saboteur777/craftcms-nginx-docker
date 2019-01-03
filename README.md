@@ -24,7 +24,7 @@ In case your `docker-compose.yml` calls the service containing PHP other than `p
 **.docker/upstream-override.conf**
 ```
 upstream _upstream {
-  server trololo:9000
+  server trololo:9000;
 }
 ```
 
