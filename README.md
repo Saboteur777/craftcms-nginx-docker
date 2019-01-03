@@ -7,6 +7,7 @@ The image will be based on the nginx:alpine image.
 ### Change user and group of nginx
 You can change which user should run your webserver, just build your image by extending this one, e.g.: 
 
+**Dockerfile**
 ```
 FROM: webmenedzser/craftcms-nginx:latest
 
