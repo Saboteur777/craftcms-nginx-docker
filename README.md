@@ -19,7 +19,7 @@ RUN apk add shadow && usermod -u 1000 nginx && groupmod -g 1000 nginx
 This will change both the UID and GID of `nginx` user (which is the default to run nginx) to 1000. 
 
 ### Override upstream setting
-In case your `docker-compose.yml` calls the service containing PHP other than `php`, you have to change your upstream settings. Just add a simple `.conf` file to your Dockerfile build process, with the following content: 
+In case your `docker-compose.yml` calls the service containing PHP other than `php`, you have to change your upstream settings. Just add a simple `.conf` file to your Dockerfile build process, with the following content (you should change `trololo` to the name of your PHP service, of course): 
 
 **.docker/upstream-override.conf**
 ```
