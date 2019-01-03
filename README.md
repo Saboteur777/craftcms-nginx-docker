@@ -36,3 +36,30 @@ FROM: webmenedzser/craftcms-nginx:latest
 ADD .docker/upstream-override.conf /etc/nginx/upstream.conf
 [...]
 ```
+
+### Example usage
+
+**docker-compose.yml**
+
+```
+volumes:
+  database_volume: {}
+
+version: '3.6'
+services:
+
+  web:
+    image: webmenedzser/craftcms-nginx:latest
+    volumes:
+      - ./:/var/www/
+
+  php:
+    image: webmenedzser/craftcms-php:latest
+    volumes:
+      - ./:/var/www/
+
+  database:
+    image: mariadb:latest
+    volumes:
+     - database_volume:/var/lib/mysql
+```
