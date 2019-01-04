@@ -1,6 +1,7 @@
 # craftcms-nginx-docker
 
 ![Docker Pull count](https://img.shields.io/docker/pulls/webmenedzser/craftcms-nginx.svg?style=popout)
+![Docker Star count](https://img.shields.io/docker/stars/webmenedzser/craftcms-nginx.svg?style=popout)
 
 **This Docker image aims to be as simple as possible to run Craft CMS - if you have special dependencies, define this image as a base in your Dockerfile (FROM: webmenedzser/craftcms-nginx:latest) and extend it as you like.**
 
