@@ -7,10 +7,10 @@
 
 **This Docker image aims to be as simple as possible to run Craft CMS - if you have special dependencies, define this image as a base in your Dockerfile (FROM: webmenedzser/craftcms-nginx:latest) and extend it as you like.**
 
-The image will be based on the nginx:alpine image. 
+The image will be based on the nginx:alpine image.
 
 ### Change user and group of nginx
-You can change which user should run your webserver, just build your image by extending this one, e.g.: 
+You can change which user should run your webserver, just build your image by extending this one, e.g.:
 
 **Dockerfile**
 ```
@@ -21,16 +21,16 @@ RUN apk add shadow && usermod -u 1000 nginx && groupmod -g 1000 nginx
 [...]
 ```
 
-This will change both the UID and GID of `nginx` user (which is the default to run nginx) to 1000. 
+This will change both the UID and GID of `nginx` user (which is the default to run nginx) to 1000.
 
 ### Service containing PHP named other than `php`
 
-In case your `docker-compose.yml` names the service containing PHP other than `php`, you have to change your upstream settings. You can do this by: 
+In case your `docker-compose.yml` names the service containing PHP other than `php`, you have to change your upstream settings. You can do this by:
 - use `links` in your docker-compose.yml (thanks @bertoost for the tip! (^.^) )
 - override upstream setting with a file
 
 #### Use `links` in your docker-compose.yml
-Add `links` to your nginx service: 
+Add `links` to your nginx service:
 
 **docker-compose.yml**
 ```
@@ -39,14 +39,14 @@ services:
     image: webmenedzser/craftcms-nginx:latest
     links:
       - trololo:php
-      
+
   trololo:
     image: webmenedzser/craftcms-php:latest
 ```
 This way you could reach your `trololo` service from the `web` service through the hostname `php`.
 
 #### Override upstream setting
-Just add a simple `.conf` file to your Dockerfile build process, with the following content (you should change `trololo` to the name of your PHP service, of course): 
+Just add a simple `.conf` file to your Dockerfile build process, with the following content (you should change `trololo` to the name of your PHP service, of course):
 
 **.docker/upstream-override.conf**
 ```
@@ -63,6 +63,45 @@ FROM: webmenedzser/craftcms-nginx:latest
 ADD .docker/upstream-override.conf /etc/nginx/upstream.conf
 [...]
 ```
+
+### Add custom location rules
+> You can now add your custom location rules by mounting a folder containing your `.conf` files or by copying the files into `/etc/nginx/conf.d/locations.d/` folder. Example:
+
+**custom-rules/craft_assets_versioning.conf**
+```
+# Simple Static Asset Versioning in Craft CMS
+# https://nystudio107.com/blog/simple-static-asset-versioning
+# Thanks Andrew!
+
+location ~* (.+)\.(?:\d+)\.(js|css|png|jpg|jpeg|gif|webp)$ {
+  try_files $uri $1.$2;
+}
+```
+
+**Dockerfile**
+```
+[...]
+
+RUN mkdir /etc/nginx/conf.d/locations.d
+COPY custom-rules/craft_assets_versioning.conf /etc/nginx/conf.d/locations.d/craft_assets_versioning.conf
+
+[...]
+```
+
+##### OR
+
+**docker-compose.yml**
+```
+[...]
+
+web:
+    image: webmenedzser/craftcms-nginx:latest
+    volumes:
+      - ./custom-rules/:/etc/nginx/conf.d/locations.d/
+
+[...]
+```
+
 
 ### Example usage
 
