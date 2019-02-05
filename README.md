@@ -2,7 +2,7 @@
 
 ![Last commit](https://badgen.net/github/last-commit/Saboteur777/craftcms-nginx-docker)
 ![Docker Build mode](https://badgen.net/badge/docker%20build/automated)
-[![Docker layers count](https://images.microbadger.com/badges/image/webmenedzser/craftcms-php.svg)](https://microbadger.com/images/webmenedzser/craftcms-php)
+[![Docker layers count](https://images.microbadger.com/badges/image/webmenedzser/craftcms-nginx.svg)](https://microbadger.com/images/webmenedzser/craftcms-nginx)
 ![Docker Pull count](https://badgen.net/docker/pulls/webmenedzser/craftcms-nginx)
 ![Keybase.io PGP](https://badgen.net/keybase/pgp/Saboteur777)
 
