@@ -11,5 +11,8 @@ COPY conf.d/fastcgi_params /etc/nginx/fastcgi_params
 # Include default configuration
 COPY conf.d/default.conf /etc/nginx/conf.d/default.conf
 
+# Include caching rules
+COPY conf.d/locations.d /etc/nginx/conf.d/locations.d
+
 # PHP upstream path is defined here:
 COPY conf.d/upstream.conf /etc/nginx/upstream.conf
