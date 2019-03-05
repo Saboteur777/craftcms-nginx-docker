@@ -1,9 +1,10 @@
 # craftcms-nginx-docker
 
-![Last commit](https://badgen.net/github/last-commit/Saboteur777/craftcms-nginx-docker)
-![Docker Build mode](https://badgen.net/badge/docker%20build/automated)
+![Docker Build status](https://img.shields.io/docker/cloud/build/webmenedzser/craftcms-nginx.svg)
+![Docker Build mode](https://img.shields.io/docker/cloud/automated/webmenedzser/craftcms-nginx.svg)
 [![Docker layers count](https://images.microbadger.com/badges/image/webmenedzser/craftcms-nginx.svg)](https://microbadger.com/images/webmenedzser/craftcms-nginx)
 ![Docker Pull count](https://badgen.net/docker/pulls/webmenedzser/craftcms-nginx)
+![Last commit](https://badgen.net/github/last-commit/Saboteur777/craftcms-nginx-docker)
 ![Keybase.io PGP](https://badgen.net/keybase/pgp/Saboteur777)
 
 **This Docker image aims to be as simple as possible to run Craft CMS - if you have special dependencies, define this image as a base in your Dockerfile (FROM: webmenedzser/craftcms-nginx:latest) and extend it as you like.**
