@@ -84,7 +84,6 @@ location ~* (.+)\.(?:\d+)\.(js|css|png|jpg|jpeg|gif|webp)$ {
 ```
 [...]
 
-RUN mkdir /etc/nginx/conf.d/locations.d
 COPY custom-rules/craft_assets_versioning.conf /etc/nginx/conf.d/locations.d/craft_assets_versioning.conf
 
 [...]
