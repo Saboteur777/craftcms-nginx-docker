@@ -1,6 +1,6 @@
 # Use this image as base
 FROM nginx:alpine
-MAINTAINER Otto Radics <otto@webmenedzser.hu>
+LABEL maintainer="Otto Radics <otto@webmenedzser.hu>"
 
 # Add base and Craft CMS specific configuration
 # Thanks to bertoost: https://github.com/bertoost/Docker-Dev-Stack
