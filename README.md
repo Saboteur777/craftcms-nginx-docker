@@ -7,16 +7,25 @@
 ![Last commit](https://badgen.net/github/last-commit/Saboteur777/craftcms-nginx-docker)
 ![Keybase.io PGP](https://badgen.net/keybase/pgp/Saboteur777)
 
-**This Docker image aims to be as simple as possible to run Craft CMS - if you have special dependencies, define this image as a base in your Dockerfile (FROM: webmenedzser/craftcms-nginx:latest) and extend it as you like.**
+**This Docker image aims to be as simple as possible to run Craft CMS - if you have special dependencies, define this image as a base in your Dockerfile (FROM webmenedzser/craftcms-nginx:yii2) and extend it as you like.**
 
 The image will be based on the nginx:alpine image.
+
+### Image flavors
+
+Two flavors are built from the same Nginx base image:
+
+- `webmenedzser/craftcms-nginx:yii2` and versioned tags like `webmenedzser/craftcms-nginx:1.31.1-yii2`, using `root /var/www/web`.
+- `webmenedzser/craftcms-nginx:laravel` and versioned tags like `webmenedzser/craftcms-nginx:1.31.1-laravel`, using `root /var/www/public`.
+
+The versioned tag is derived from the Nginx version inside the built image.
 
 ### Change user and group of nginx
 You can change which user should run your webserver, just build your image by extending this one, e.g.:
 
 **Dockerfile**
 ```
-FROM: webmenedzser/craftcms-nginx:latest
+FROM webmenedzser/craftcms-nginx:yii2
 
 [...]
 RUN apk add shadow && usermod -u 1000 nginx && groupmod -g 1000 nginx
@@ -38,7 +47,7 @@ Add `links` to your nginx service:
 ```
 services:
   web:
-    image: webmenedzser/craftcms-nginx:latest
+    image: webmenedzser/craftcms-nginx:yii2
     links:
       - trololo:php
 
@@ -59,7 +68,7 @@ upstream _upstream {
 
 **Dockerfile**
 ```
-FROM: webmenedzser/craftcms-nginx:latest
+FROM webmenedzser/craftcms-nginx:yii2
 
 [...]
 ADD .docker/upstream-override.conf /etc/nginx/upstream.conf
@@ -96,7 +105,7 @@ COPY custom-rules/craft_assets_versioning.conf /etc/nginx/conf.d/locations.d/cra
 [...]
 
 web:
-    image: webmenedzser/craftcms-nginx:latest
+    image: webmenedzser/craftcms-nginx:yii2
     volumes:
       - ./custom-rules/:/etc/nginx/conf.d/locations.d/
 
@@ -116,7 +125,7 @@ version: '3.6'
 services:
 
   web:
-    image: webmenedzser/craftcms-nginx:latest
+    image: webmenedzser/craftcms-nginx:yii2
     volumes:
       - ./:/var/www/
 

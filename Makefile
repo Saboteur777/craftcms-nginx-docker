@@ -1,14 +1,20 @@
 IMAGE ?= webmenedzser/craftcms-nginx
-LATEST_TAG = $(IMAGE):latest
+FLAVORS ?= yii2 laravel
 
-.PHONY: release build push
+.PHONY: release build push $(addprefix build-,$(FLAVORS)) $(addprefix push-,$(FLAVORS))
 
 release: build push
+build: $(addprefix build-,$(FLAVORS))
+push: $(addprefix push-,$(FLAVORS))
 
-build:
-	docker build -t $(LATEST_TAG) ./
-	NGINX_VERSION=$$(docker run --rm $(LATEST_TAG) nginx -v 2>&1 | awk -F/ '/nginx version/ {print $$2}') && docker tag $(LATEST_TAG) $(IMAGE):$${NGINX_VERSION}
+define BUILD_FLAVOR
+build-$(1):
+	docker build --build-arg FLAVOR=$(1) -t $(IMAGE):$(1) ./
+	NGINX_VERSION=`docker run --rm --entrypoint nginx $(IMAGE):$(1) -v 2>&1 | sed -n 's#^nginx version: nginx/##p'` && [ -n "$$$$NGINX_VERSION" ] && docker tag $(IMAGE):$(1) $(IMAGE):$$$$NGINX_VERSION-$(1)
 
-push:
-	docker push $(LATEST_TAG)
-	NGINX_VERSION=$$(docker run --rm $(LATEST_TAG) nginx -v 2>&1 | awk -F/ '/nginx version/ {print $$2}') && docker push $(IMAGE):$${NGINX_VERSION}
+push-$(1):
+	docker push $(IMAGE):$(1)
+	NGINX_VERSION=`docker run --rm --entrypoint nginx $(IMAGE):$(1) -v 2>&1 | sed -n 's#^nginx version: nginx/##p'` && [ -n "$$$$NGINX_VERSION" ] && docker push $(IMAGE):$$$$NGINX_VERSION-$(1)
+endef
+
+$(foreach flavor,$(FLAVORS),$(eval $(call BUILD_FLAVOR,$(flavor))))
