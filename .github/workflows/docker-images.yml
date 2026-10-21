@@ -1,0 +1,77 @@
+name: Docker images
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - 'Dockerfile'
+      - '.dockerignore'
+      - 'conf.d/**'
+      - 'Makefile'
+      - 'scripts/**'
+      - '.github/workflows/docker-images.yml'
+  pull_request:
+    paths:
+      - 'Dockerfile'
+      - '.dockerignore'
+      - 'conf.d/**'
+      - 'Makefile'
+      - 'scripts/**'
+      - '.github/workflows/docker-images.yml'
+
+permissions:
+  contents: read
+
+# Publishing runs share a group even if the workflow is renamed.
+concurrency:
+  group: docker-images-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Nginx ${{ matrix.flavor }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        flavor: [yii2, laravel]
+    env:
+      IMAGE: webmenedzser/craftcms-nginx
+      FLAVOR: ${{ matrix.flavor }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Build image
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          build-args: FLAVOR=${{ matrix.flavor }}
+          platforms: linux/amd64
+          tags: ${{ env.IMAGE }}:${{ matrix.flavor }}
+          pull: true
+          no-cache: true
+          load: true
+
+      - name: Check Nginx configuration and HTTP responses
+        run: make test-"$FLAVOR"
+
+      - name: Log in to Docker Hub
+        if: github.event_name != 'pull_request' && github.repository == 'Saboteur777/craftcms-nginx-docker' && github.ref == 'refs/heads/master' && github.ref_name == github.event.repository.default_branch
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push tested image and its aliases
+        if: github.event_name != 'pull_request' && github.repository == 'Saboteur777/craftcms-nginx-docker' && github.ref == 'refs/heads/master' && github.ref_name == github.event.repository.default_branch
+        run: make push-"$FLAVOR"
